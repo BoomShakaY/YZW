@@ -4,6 +4,7 @@ using System.Threading;
 using System.Linq;
 using System.Text;
 
+Chinese is not valuable
 namespace ²Ù×÷ÏµÍ³
 {
     class Program
