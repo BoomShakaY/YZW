@@ -1,0 +1,127 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Linq;
+using System.Text;
+
+namespace ²Ù×÷ÏµÍ³
+{
+    class Program
+    {
+        private Queue<Thread> TaskQueue = new Queue<Thread>();
+        private int p = 0;
+        private int avail = 5;
+        private int full = 0;
+        private int[] task = new int[6];
+        private bool P(ref int x, ref Thread b)
+        {
+            x--;
+            if (x < 0)
+            {
+                TaskQueue.Enqueue(b);
+                return false;
+            }
+
+            return true;
+        }
+        private void V(ref int x)
+        {
+            x++;
+            if (x <= 0)
+            {
+
+                TaskQueue.Dequeue().Start();
+
+            }
+
+        }
+        private void prodece()
+        {
+            task[p++] = 1;
+            Console.WriteLine("Produce task");
+
+            V(ref full);
+        }
+        private void consume()
+        {
+            task[--p] = 0;
+            Console.WriteLine("Consume task");
+            V(ref avail);
+        }
+        public void producer()
+        {
+            lock (task)
+            {
+                Thread t = new Thread(new ThreadStart(this.prodece));
+                if (P(ref avail, ref t))
+                {
+                    t.Start();
+                    Thread.Sleep(50);
+                    t.Abort();
+                    //Console.WriteLine("full:{0}  avail:{1}",full,avail);
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+        }
+        public void consumer()
+        {
+            lock (task)
+            {
+                Thread t = new Thread(new ThreadStart(this.consume));
+                if (P(ref full, ref t))
+                {
+                    t.Start();
+                    Thread.Sleep(50);
+                    t.Abort();
+                }
+                else
+                {
+                    return;
+                }
+            }
+        }
+        static void Main(string[] args)
+        {
+            Program a = new Program();
+            Random ran = new Random();
+            int i = 0;
+            /*while (i < 30)
+            {
+                double m = ran.NextDouble();
+                if (m * 10 <= 5)
+                {
+                    //Console.WriteLine("{0}",m);
+                    a.producer();
+
+                }
+                else
+                {
+                    //Console.WriteLine("consum:{0}", m);
+                    a.consumer();
+                }
+                i++;
+            }*/
+            a.consumer();
+            a.consumer();
+            a.consumer();
+            a.consumer();
+            a.consumer();
+            a.consumer();
+            a.consumer();
+            a.producer();
+            a.consumer();
+            a.consumer();
+            a.producer();
+            a.producer();
+            a.producer();
+            a.producer();
+            a.producer();
+            a.producer();
+            Console.ReadKey();
+        }
+    }
+}
